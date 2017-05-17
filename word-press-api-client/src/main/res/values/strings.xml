@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">wp-api-v2-client-android</string>
+
+    <string name="wp_create_post_header1">USER GENERATED CONTENT</string>
+    <string name="wp_create_post_header2">Capture your world by uploading a mini article that can include photos and your current location.</string>
+    <string name="wp_text_headline">Headline</string>
+    <string name="wp_text_summary">Summary</string>
+    <string name="wp_text_categories">Categories</string>
+    <string name="wp_text_location">Location</string>
+    <string name="wp_text_photos">Photos</string>
+
+    <string name="wp_text_address">Address</string>
+
+    <string name="wp_post_publish">Publish</string>
+    <string name="wp_media_delete">Delete</string>
+    <string name="wp_media_edit">Edit</string>
+
+    <dimen name="media_thumb_size">100dp</dimen>
+
+    <!-- WP defaults -->
+    <string name="user_role">author</string>
+
+    <string name="post_type">gallery</string>
+
+    <string name="content_video_shortcode">[baobab_video url=http://%1$s/%2$s]</string>
+
+    <string name="content_audio_uri">[baobab_audio url=http://%1$s/%2$s]</string>
+
+    <string name="content_location">[wp_gmaps address=\""%s\"" zoom="13" marker="1"]</string>
+
+    <!-- PW Prefs -->
+    <string name="pref_title_wp">WordPress</string>
+
+    <string name="pref_id_wp_login_user">pref.ftp.login.user</string>
+    <string name="pref_id_wp_login_pass">pref.ftp.login.password</string>
+    <string name="pref_id_wp_server_ip">pref.ftp.server.ip</string>
+    <string name="pref_id_wp_server_port">pref.ftp.server.port</string>
+
+    <string name="pref_id_wordpress_id">pref.wp.id</string>
+    <string name="pref_id_wordpress_username">pref.wp.username</string>
+    <string name="pref_id_wordpress_password">pref.wp.password</string>
+    <string name="pref_id_wordpress_display_name">pref.wp.display_name</string>
+    <string name="pref_id_wordpress_admin">pref.wp.admin</string>
+
+</resources>
