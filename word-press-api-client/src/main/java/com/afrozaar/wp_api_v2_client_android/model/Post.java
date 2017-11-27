@@ -3,6 +3,8 @@ package com.afrozaar.wp_api_v2_client_android.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.afrozaar.wp_api_v2_client_android.rest.HttpServerErrorResponse;
+import com.afrozaar.wp_api_v2_client_android.rest.WordPressRestResponse;
 import com.afrozaar.wp_api_v2_client_android.util.Validate;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
 
 /**
  * @author Jan-Louis Crafford
@@ -119,6 +123,66 @@ public class Post extends WPObject<Post> {
     public Post withFeaturedMedia(int featuredMedia) {
         setFeaturedMedia(featuredMedia);
         return this;
+    }
+
+    /**
+     * Media Request Call of the featured image for the object.
+     */
+    private Call<Media> mediaRequestCall = null;
+
+    public void setMediaRequestCall(Call<Media> mediaRequestCall) {
+        this.mediaRequestCall = mediaRequestCall;
+    }
+
+    public Call<Media> getMediaRequestCall() {
+        return mediaRequestCall;
+    }
+
+    public boolean hasRequestedMedia() {
+        return getMediaRequestCall() != null && getMediaRequestCall().isExecuted();
+    }
+
+    /**
+     * Response of Media Request Call of the featured image for the object.
+     */
+    private WordPressRestResponse<Media> mediaRequestResponse = null;
+
+    public WordPressRestResponse<Media> getMediaRequestResponse(final WordPressRestResponse<Void> callback) {
+        if (mediaRequestResponse == null) {
+            mediaRequestResponse = new WordPressRestResponse<Media>() {
+                @Override
+                public void onSuccess(Media result) {
+                    setMedia(result);
+                    if (callback != null) {
+                        callback.onSuccess(null);
+                    }
+                }
+                @Override
+                public void onFailure(HttpServerErrorResponse errorResponse) {
+                    if (callback != null) {
+                        callback.onFailure(errorResponse);
+                    }
+                }
+            };
+        }
+        return mediaRequestResponse;
+    }
+
+    /**
+     * Media of the featured image for the object.
+     */
+    private Media media = null;
+
+    public void setMedia(Media media) {
+        this.media = media;
+    }
+
+    public Media getMedia() {
+        return media;
+    }
+
+    public boolean hasMedia() {
+        return getMedia() != null;
     }
 
     /**

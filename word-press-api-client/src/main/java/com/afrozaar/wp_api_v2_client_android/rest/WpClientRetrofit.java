@@ -8,6 +8,7 @@ import com.afrozaar.wp_api_v2_client_android.model.Media;
 import com.afrozaar.wp_api_v2_client_android.model.Meta;
 import com.afrozaar.wp_api_v2_client_android.model.Post;
 import com.afrozaar.wp_api_v2_client_android.model.Taxonomy;
+import com.afrozaar.wp_api_v2_client_android.model.Type;
 import com.afrozaar.wp_api_v2_client_android.model.User;
 import com.afrozaar.wp_api_v2_client_android.model.dto.PostStreamItem;
 import com.afrozaar.wp_api_v2_client_android.rest.interceptor.OkHttpBasicAuthInterceptor;
@@ -249,6 +250,50 @@ public class WpClientRetrofit {
         return restInterface.getPostFeedForPage(startingPage);
     }
 
+    // CUSTOM POSTS
+
+    public void getCustomPost(String type, long postId, WordPressRestResponse<Post> callback) {
+        doRetrofitCall(restInterface.getCustomPost(type, postId, null), callback);
+    }
+
+    public Call<Post> getCustomPost(String type, long postId) {
+        return restInterface.getCustomPost(type, postId, null);
+    }
+
+    public void getCustomPostForEdit(String type, long postId, WordPressRestResponse<Post> callback) {
+        Map<String, String> map = new HashMap<>();
+        map.put("context", "edit");
+        doRetrofitCall(restInterface.getCustomPost(type, postId, map), callback);
+    }
+
+    public void getCustomPosts(String type, WordPressRestResponse<List<Post>> callback) {
+        doRetrofitCall(restInterface.getCustomPosts(type), callback);
+    }
+
+    public Call<List<Post>> getCustomPosts(String type) {
+        return restInterface.getCustomPosts(type);
+    }
+
+    public Call<List<Post>> getCustomPostsForPage(String type, int startPage) {
+        Map<String, String> map = new HashMap<>();
+        map.put("page", startPage + "");
+        return restInterface.getCustomPosts(type, map);
+    }
+
+    public Call<List<Post>> getCustomPostsForPage(String type, int startPage, int pageSize) {
+        Map<String, String> map = new HashMap<>();
+        map.put("page", startPage + "");
+        map.put("per_page", pageSize + "");
+        return restInterface.getCustomPosts(type, map);
+    }
+
+    public Call<List<Post>> getCustomPostsAfterDate(String type, String date) {
+        Map<String, String> map = new HashMap<>();
+        map.put("after", date);
+        return restInterface.getCustomPosts(type, map);
+    }
+
+
     /* MEDIA */
 
     public void createMedia(Media media, File file, WordPressRestResponse<Media> callback) {
@@ -261,11 +306,11 @@ public class WpClientRetrofit {
     public Call<Media> createMedia(Media media, File file) {
         Map<String, RequestBody> map = ContentUtil.makeMediaItemUploadMap(media, file);
         String header;
-        if (!TextUtils.isEmpty(media.getCaption())) {
+        if (media.getCaption() != null && !TextUtils.isEmpty(media.getCaption().getRendered())) {
             int extStart = file.getName().lastIndexOf(".");
             String ext = file.getName().substring(extStart);
 
-            String sanitized = media.getCaption().replaceAll("[^[a-z][A-Z][0-9][.]]", "_");
+            String sanitized = media.getCaption().getRendered().replaceAll("[^[a-z][A-Z][0-9][.]]", "_");
             header = "filename=" + sanitized + ext;
         } else {
             header = "filename=" + file.getName();
@@ -279,6 +324,10 @@ public class WpClientRetrofit {
 
     public Call<Media> getMedia(long mediaId) {
         return restInterface.getMedia(mediaId);
+    }
+
+    public void getMedia(long mediaId, WordPressRestResponse<Media> callback) {
+        doRetrofitCall(restInterface.getMedia(mediaId), callback);
     }
 
     public void getMediaForPost(long postId, String mimeType, WordPressRestResponse<List<Media>> callback) {
@@ -305,6 +354,16 @@ public class WpClientRetrofit {
 
     public Call<Media> deleteMedia(long mediaId) {
         return restInterface.deleteMedia(mediaId);
+    }
+
+    /* TYPES */
+
+    public Call<List<Type>> getTypes() {
+        return restInterface.getTypes();
+    }
+
+    public void getTypes(WordPressRestResponse<List<Type>> callback) {
+        doRetrofitCall(restInterface.getTypes(), callback);
     }
 
     /* TAXONOMIES */

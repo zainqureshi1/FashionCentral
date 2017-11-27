@@ -6,6 +6,7 @@ import com.afrozaar.wp_api_v2_client_android.model.Meta;
 import com.afrozaar.wp_api_v2_client_android.model.Page;
 import com.afrozaar.wp_api_v2_client_android.model.Post;
 import com.afrozaar.wp_api_v2_client_android.model.Taxonomy;
+import com.afrozaar.wp_api_v2_client_android.model.Type;
 import com.afrozaar.wp_api_v2_client_android.model.User;
 import com.afrozaar.wp_api_v2_client_android.model.dto.PostFeedResponseDto;
 import com.afrozaar.wp_api_v2_client_android.model.dto.PostStreamItem;
@@ -174,6 +175,39 @@ public interface WordPressRestInterface {
     Call<Taxonomy> deletePostTag(@Path("postId") long postId, @Path("tagId") long catId);
 
 
+    /* CUSTOM POSTS */
+
+    /**
+     * Gets all Custom Posts.
+     *
+     * @param type of the Custom Post
+     * @return List of Post objects
+     */
+    @GET("{type}")
+    Call<List<Post>> getCustomPosts(@Path("type") String type);
+
+    /**
+     * Gets all Custom Posts using provided query params
+     *
+     * @param type of the Custom Post
+     * @param map Optional query parameters
+     * @return List of Post objects
+     */
+    @GET("{type}")
+    Call<List<Post>> getCustomPosts(@Path("type") String type, @QueryMap Map<String, String> map);
+
+    /**
+     * Gets a single Custom Post.
+     *
+     * @param type of the Custom Post
+     * @param postId Id of the Post
+     * @param map    Optional query params
+     * @return Post object
+     */
+    @GET("{type}/{id}")
+    Call<Post> getCustomPost(@Path("type") String type, @Path("id") long postId, @QueryMap Map<String, String> map);
+
+
     /* PAGES */
 
     @POST("pages")
@@ -287,9 +321,8 @@ public interface WordPressRestInterface {
 
     /* TYPES */
 
-    //@GET("types")
-
-    //@GET("types/{typeId}")
+    @GET("types")
+    Call<List<Type>> getTypes();
 
 
     /* STATUSES */

@@ -15,8 +15,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.afrozaar.wp_api_v2_client_android.model.Media;
 import com.afrozaar.wp_api_v2_client_android.model.Post;
 import com.afrozaar.wp_api_v2_client_android.model.Taxonomy;
+import com.afrozaar.wp_api_v2_client_android.model.Type;
 import com.afrozaar.wp_api_v2_client_android.rest.HttpServerErrorResponse;
 import com.afrozaar.wp_api_v2_client_android.rest.WordPressRestResponse;
 import com.e2esp.fashioncentral.R;
@@ -33,6 +35,7 @@ import java.util.List;
 import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,7 +60,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         setupView();
 
-        loadPosts(1);
+        loadCustomPosts("fashion_shows", 1);
+        //loadPosts(1);
     }
 
     private void setupView() {
@@ -93,6 +97,19 @@ public class MainActivity extends AppCompatActivity
         recyclerViewPosts.addOnScrollListener(postScrollListener);
     }
 
+    private void loadTypes() {
+        Statics.getWpClient().getTypes(new WordPressRestResponse<List<Type>>() {
+            @Override
+            public void onSuccess(List<Type> result) {
+                Log.i("TAG", "getTypes result: "+result);
+            }
+            @Override
+            public void onFailure(HttpServerErrorResponse errorResponse) {
+                Log.i("TAG", "getTypes errorResponse: "+errorResponse);
+            }
+        });
+    }
+
     private void loadCategories() {
         Statics.getWpClient().getCategories(new WordPressRestResponse<List<Taxonomy>>() {
             @Override
@@ -122,6 +139,58 @@ public class MainActivity extends AppCompatActivity
                 Log.i(TAG, "getPosts errorResponse: "+errorResponse);
             }
         });
+    }
+
+    private void loadCustomPosts(String type, int page) {
+        if (page <= 1) {
+            posts.clear();
+            postRecyclerAdapter.notifyDataSetChanged();
+        }
+        Utils.doRetrofitCall(Statics.getWpClient().getCustomPostsForPage(type, page), new WordPressRestResponse<List<Post>>() {
+            @Override
+            public void onSuccess(List<Post> result) {
+                Log.i(TAG, "getCustomPosts result: "+result);
+                if (result != null && result.size() > 0) {
+                    posts.addAll(result);
+                    postRecyclerAdapter.notifyDataSetChanged();
+                    loadPostsMedia();
+                }
+            }
+
+            @Override
+            public void onFailure(HttpServerErrorResponse errorResponse) {
+                Log.i(TAG, "getCustomPosts errorResponse: "+errorResponse);
+            }
+        });
+    }
+
+    private void loadPostsMedia() {
+        WordPressRestResponse<Void> updateCallback = null;
+        for (int i = 0; i < posts.size(); i++) {
+            Post post = posts.get(i);
+            if (post.hasMedia() || post.hasRequestedMedia()) {
+                continue;
+            }
+            if (updateCallback == null) {
+                updateCallback = new WordPressRestResponse<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        if (postRecyclerAdapter != null) {
+                            postRecyclerAdapter.notifyDataSetChanged();
+                        }
+                    }
+                    @Override
+                    public void onFailure(HttpServerErrorResponse errorResponse) {
+                    }
+                };
+            }
+            Call<Media> mediaCall = post.getMediaRequestCall();
+            if (mediaCall == null) {
+                mediaCall = Statics.getWpClient().getMedia(post.getFeaturedMedia());
+                post.setMediaRequestCall(mediaCall);
+            }
+            Utils.doRetrofitCall(mediaCall, post.getMediaRequestResponse(updateCallback));
+        }
     }
 
     private void clickedPost(Post post) {

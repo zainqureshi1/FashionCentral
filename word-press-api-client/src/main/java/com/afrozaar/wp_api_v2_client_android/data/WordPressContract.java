@@ -361,6 +361,22 @@ public class WordPressContract {
         String COUNT = "count";
     }
 
+    public interface TypeColumns {
+
+        /**
+         * Object's label
+         * <P>Type: TEXT</P>
+         */
+        String NAME = "name";
+
+        /**
+         * Object's description
+         * <P>Type: TEXT</P>
+         */
+        String DESCRIPTION = "description";
+
+    }
+
     public interface MetaColumns {
 
         /**

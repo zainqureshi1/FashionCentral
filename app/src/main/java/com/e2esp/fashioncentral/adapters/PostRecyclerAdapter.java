@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afrozaar.wp_api_v2_client_android.model.Media;
 import com.afrozaar.wp_api_v2_client_android.model.Post;
 import com.e2esp.fashioncentral.R;
 import com.e2esp.fashioncentral.interfaces.OnPostClickListener;
+import com.e2esp.fashioncentral.utils.GlideApp;
 
 import java.util.ArrayList;
 
@@ -24,11 +26,13 @@ import butterknife.ButterKnife;
 
 public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapter.PostViewHolder> {
 
+    private Context context;
     private LayoutInflater inflater;
     private ArrayList<Post> postsList;
     private OnPostClickListener onPostClickListener;
 
     public PostRecyclerAdapter(Context context, ArrayList<Post> postsList, OnPostClickListener onPostClickListener) {
+        this.context = context;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.postsList = postsList;
         this.onPostClickListener = onPostClickListener;
@@ -60,7 +64,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         PostViewHolder(View itemView) {
             super(itemView);
             topView = itemView;
-            ButterKnife.bind(itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         void bindView(final Post post) {
@@ -70,9 +74,16 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     onPostClickListener.onPostClick(post);
                 }
             });
-            //imageView.setImageResource(post.getFeaturedMedia());
             textViewTitle.setText(post.getTitle().getRendered());
             textViewContent.setText(post.getContent().getRendered());
+
+            Media media = post.getMedia();
+            if (media != null) {
+                GlideApp.with(context).load(media.getSourceUrl()).into(imageView);
+            } else {
+                GlideApp.with(context).clear(imageView);
+                imageView.setImageDrawable(null);
+            }
         }
 
     }
