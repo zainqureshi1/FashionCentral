@@ -18,24 +18,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
+ *
  * Created by Zain on 2/1/2017.
  */
 
 public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapter.PostViewHolder> {
 
-    private Context context;
+    private LayoutInflater inflater;
     private ArrayList<Post> postsList;
     private OnPostClickListener onPostClickListener;
 
     public PostRecyclerAdapter(Context context, ArrayList<Post> postsList, OnPostClickListener onPostClickListener) {
-        this.context = context;
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.postsList = postsList;
         this.onPostClickListener = onPostClickListener;
     }
 
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.card_post_layout, parent, false);
+        View view = inflater.inflate(R.layout.card_post_layout, parent, false);
         return new PostViewHolder(view);
     }
 
@@ -49,20 +50,20 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         holder.bindView(postsList.get(position));
     }
 
-    public class PostViewHolder extends RecyclerView.ViewHolder {
+    class PostViewHolder extends RecyclerView.ViewHolder {
 
         private View topView;
-        private @BindView(R.id.imageViewPost) ImageView imageView;
-        private @BindView(R.id.textViewPostTitle)TextView textViewTitle;
-        private @BindView(R.id.textViewPostContent) TextView textViewContent;
+        @BindView(R.id.imageViewPost) ImageView imageView;
+        @BindView(R.id.textViewPostTitle)TextView textViewTitle;
+        @BindView(R.id.textViewPostContent) TextView textViewContent;
 
-        public PostViewHolder(View itemView) {
+        PostViewHolder(View itemView) {
             super(itemView);
             topView = itemView;
             ButterKnife.bind(itemView);
         }
 
-        public void bindView(final Post post) {
+        void bindView(final Post post) {
             topView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

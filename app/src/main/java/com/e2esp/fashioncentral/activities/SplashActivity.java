@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import com.e2esp.fashioncentral.R;
 
 /**
+ *
  * Created by Zain on 2/17/2017.
  */
 

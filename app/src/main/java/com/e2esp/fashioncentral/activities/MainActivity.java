@@ -38,9 +38,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private final String TAG = "MainActivity";
 
-    private @BindView(R.id.toolbar) Toolbar toolbar;
-    private @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
-    private @BindView(R.id.nav_view) NavigationView navigationView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
+    @BindView(R.id.nav_view) NavigationView navigationView;
 
     @BindView(R.id.recyclerViewPosts) RecyclerView recyclerViewPosts;
     private ArrayList<Post> posts;
